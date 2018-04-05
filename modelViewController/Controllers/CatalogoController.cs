@@ -11,7 +11,7 @@ namespace modelViewController.Controllers
     {
         IProductsRepository products;
         public CatalogoController(){
-            products = new MemoryProductsRepo();
+            products = new AzureProductsRepo();
         }
         // GET: Catalogo
         public ActionResult Index()

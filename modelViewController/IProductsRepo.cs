@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Azure; // Namespace for CloudConfigurationManager
+using Microsoft.Azure.Storage; // Namespace for StorageAccounts
 
 namespace modelViewController{
     public interface IProductsRepository
