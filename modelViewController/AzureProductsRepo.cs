@@ -13,7 +13,26 @@ namespace modelViewController{
         }
         public List<ProductEntity> allProducts()
         {
-            return new List<ProductEntity>();
+            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(azureConStr);
+
+        // Create the table client.
+            CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
+
+            // Retrieve a reference to the table.
+            CloudTable table = tableClient.GetTableReference("catalogo");
+
+            TableQuery<azureProduct> query = new TableQuery<azureProduct>();
+
+            var token = new TableContinuationToken();
+            var list = new List<ProductEntity>();
+            foreach(azureProduct entity in table.ExecuteQuerySegmentedAsync(query,token).Result){
+                 list.Add(new ProductEntity(){
+                    Code = entity.Code,
+                    Category = entity.Category,
+                    Description = entity.Description
+                 });
+            }
+            return list;
         }
 
         public List<ProductEntity> allProductsByCategory(string category)
