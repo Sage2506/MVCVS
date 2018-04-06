@@ -13,13 +13,8 @@ namespace modelViewController{
         }
         public List<ProductEntity> allProducts()
         {
-            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(azureConStr);
-
-        // Create the table client.
-            CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
-
             // Retrieve a reference to the table.
-            CloudTable table = tableClient.GetTableReference("catalogo");
+            CloudTable table = TableAzure();
 
             TableQuery<azureProduct> query = new TableQuery<azureProduct>();
 
@@ -40,16 +35,11 @@ namespace modelViewController{
             return new List<ProductEntity>();
         }
 
-        public void createProduct(ProductEntity newProduct)
-        {
-        // Retrieve the storage account from the connection string.
-        CloudStorageAccount storageAccount = CloudStorageAccount.Parse(azureConStr);
-
-        // Create the table client.
-        CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
+        public void createProduct(ProductEntity newProduct){
+        
 
         // Retrieve a reference to the table.
-        CloudTable table = tableClient.GetTableReference("catalogo");
+        CloudTable table = TableAzure();
 
         // Create the table if it doesn't exist.
         var creada = table.CreateIfNotExistsAsync().Result;
@@ -74,9 +64,29 @@ namespace modelViewController{
             throw new NotImplementedException();
         }
 
+        private CloudTable TableAzure(){
+            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(azureConStr);
+
+        // Create the table client.
+            CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
+
+            // Retrieve a reference to the table.
+            CloudTable table = tableClient.GetTableReference("catalogo");
+            return table;
+        }
         public ProductEntity productDetails(string code)
         {
-            return new ProductEntity();
+            TableOperation retrieveOperation = TableOperation.Retrieve<azureProduct>("Smith","Ben");
+
+            TableResult retrievedResult = TableAzure().ExecuteAsync(retrieveOperation);
+
+            if(retrievedResult != null)
+            {
+                Console.WriteLine(((ProductEntity)retrievedResult.Result).Code);
+            }
+            else{
+                Console.WriteLine("Error");
+            }
         }
 
         public void updateData(ProductEntity toUpdate)
