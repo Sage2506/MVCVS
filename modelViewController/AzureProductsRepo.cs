@@ -3,15 +3,16 @@ using System.Collections.Generic;
 //using Microsoft.Azure;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
+using System.Threading.Tasks;
 
 namespace modelViewController{
-    public class AzureProductsRepo : IProductsRepository
+    public class AzureProductsRepo //: IProductsRepository
     {
         private string azureConStr;
         public AzureProductsRepo() {
             azureConStr = @"DefaultEndpointsProtocol=https;AccountName=s100ne2g9;AccountKey=L7oSx/X7xuAbLS0kH9ePHXynuczH9fGSD7Ca3sI9ls2Es7ulmb983I/IEggc6TYGQ6vnV9s8KlENjT7JhkNrhw==;EndpointSuffix=core.windows.net";
         }
-        public List<ProductEntity> allProducts()
+        public Task<List<ProductEntity>> allProducts()
         {
             // Retrieve a reference to the table.
             CloudTable table = TableAzure();
@@ -30,12 +31,13 @@ namespace modelViewController{
             return list;
         }
 
-        public List<ProductEntity> allProductsByCategory(string category)
+        public Task<List<ProductEntity>> allProductsByCategory(string category)
         {
             return new List<ProductEntity>();
         }
 
-        public void createProduct(ProductEntity newProduct){
+        public Task<bool> createProduct(ProductEntity newProduct)
+        {
         
 
         // Retrieve a reference to the table.
@@ -59,7 +61,7 @@ namespace modelViewController{
         var x = table.ExecuteAsync(insertOperation).Result;
         }
 
-        public void eraseProductCode(string code)
+        public Task<bool>  eraseProductCode(string code)
         {
             throw new NotImplementedException();
         }
@@ -74,11 +76,11 @@ namespace modelViewController{
             CloudTable table = tableClient.GetTableReference("catalogo");
             return table;
         }
-        public ProductEntity productDetails(string code)
+        public Task<ProductEntity> productDetails(string code)
         {
             TableOperation retrieveOperation = TableOperation.Retrieve<azureProduct>("Smith","Ben");
 
-            TableResult retrievedResult = TableAzure().ExecuteAsync(retrieveOperation);
+            TableResult retrievedResult = TableAzure().ExecuteAsync(retrieveOperation).Result;
 
             if(retrievedResult != null)
             {
@@ -87,9 +89,10 @@ namespace modelViewController{
             else{
                 Console.WriteLine("Error");
             }
+            return null;
         }
 
-        public void updateData(ProductEntity toUpdate)
+        public Task<bool>  updateData(ProductEntity toUpdate)
         {
             throw new NotImplementedException();
         }

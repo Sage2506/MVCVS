@@ -9,22 +9,22 @@ namespace modelViewController{
     public interface IProductsRepository
     {
         
-        List<ProductEntity> allProducts();
+        Task<List<ProductEntity>> allProducts();
 
-        List<ProductEntity> allProductsByCategory(string category);
+        Task<List<ProductEntity>> allProductsByCategory(string category);
 
-        ProductEntity productDetails(string code);
+        Task<ProductEntity> productDetails(string code);
 
-        void createProduct(ProductEntity newProduct);
+        Task<bool> createProduct(ProductEntity newProduct);
 
-        void updateData(ProductEntity toUpdate);
+        Task<bool> updateData(ProductEntity toUpdate);
 
-        void updateImage(ProductEntity product, string image);
+        Task<bool>  updateImage(ProductEntity product, string image);
         
-        void eraseProductCode(string code);
+        Task<bool>  eraseProductCode(string code);
     }
 
-    public class MemoryProductsRepo : IProductsRepository
+    public class MemoryProductsRepo //: IProductsRepository
     {
         private static List<ProductEntity> db;
         static MemoryProductsRepo(){
