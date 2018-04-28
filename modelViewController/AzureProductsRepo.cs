@@ -80,7 +80,14 @@ namespace modelViewController{
 
             if(retrievedResult != null)
             {
-                Console.WriteLine(((ProductEntity)retrievedResult.Result).Code);
+                var az = retrievedResult.Result as azureProduct;
+                return new ProductEntity(){
+                    Code = az.Code,
+                    Description = az.Description,
+                    Price = decimal.Parse(az.Price),
+                    Category = az.Category,
+                    image = az.image
+                };
             }
             else{
                 Console.WriteLine("Error");
