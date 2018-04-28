@@ -14,9 +14,9 @@ namespace modelViewController.Controllers
             products = new AzureProductsRepo();
         }
         // GET: Catalogo
-        public ActionResult Index()
+        public async Task <ActionResult> Index()
         {
-            var model = products.allProducts()
+            var model = (await products.allProducts())
                         .Select( p => new ProductModel(){
                             Code = p.Code,
                             Category = p.Category,
@@ -27,9 +27,9 @@ namespace modelViewController.Controllers
         }
 
         // GET: Catalogo/Details/5
-        public ActionResult Details(string id)
+        public async Task<ActionResult> Details(string id)
         {
-            var model = products.productDetails(id);
+            var model =(await products.productDetails(id));
             var detailed = new ProductModel(){
                 Code = model.Code,
                 Description = model.Description,
@@ -74,9 +74,9 @@ namespace modelViewController.Controllers
         }
 
         // GET: Catalogo/Edit/5
-        public ActionResult Edit(string id)
+        public async Task<ActionResult> Edit(string id)
         {
-            var product = products.productDetails(id);
+            var product = (await products.productDetails(id));
             return View(new ProductEditModel(){
                 Description = product.Description,
                 Price = product.Price,
@@ -111,9 +111,9 @@ namespace modelViewController.Controllers
         }
 
         // GET: Catalogo/Delete/5
-        public ActionResult Delete(string id)
+        public async Task <ActionResult> Delete(string id)
         {
-             var product = products.productDetails(id);
+             var product = (await products.productDetails(id));
             
             return View(new ProductDeleteModel(){
                 Code = product.Code,

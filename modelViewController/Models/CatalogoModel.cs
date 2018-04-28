@@ -11,7 +11,9 @@ namespace modelViewController{
 
         public decimal Price{get; set;}
 
-        public string imagen{get; set;}
+        public string Image{get; set;}
+
+        public string Status{get;set;}
     }
 
     public class ProductEditModel {
@@ -23,7 +25,9 @@ namespace modelViewController{
 
         public decimal Price{get; set;}
 
-        public string imagen{get; set;}
+        public string Image{get; set;}
+
+        public string Status{get;set;}
     }
     public class ProductCreateModel {
         [Required]
@@ -34,7 +38,9 @@ namespace modelViewController{
         [Required]
         public decimal Price{get; set;}
 
-        public string imagen{get; set;}
+        public string Image{get; set;}
+
+        public string Status{get;set;}
     }
 
     public class ProductDeleteModel {

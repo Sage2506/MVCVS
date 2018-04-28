@@ -6,13 +6,13 @@ using Microsoft.WindowsAzure.Storage.Table;
 using System.Threading.Tasks;
 
 namespace modelViewController{
-    public class AzureProductsRepo //: IProductsRepository
+    public class AzureProductsRepo : IProductsRepository
     {
         private string azureConStr;
         public AzureProductsRepo() {
             azureConStr = @"DefaultEndpointsProtocol=https;AccountName=s100ne2g9;AccountKey=L7oSx/X7xuAbLS0kH9ePHXynuczH9fGSD7Ca3sI9ls2Es7ulmb983I/IEggc6TYGQ6vnV9s8KlENjT7JhkNrhw==;EndpointSuffix=core.windows.net";
         }
-        public Task<List<ProductEntity>> allProducts()
+        public async Task<List<ProductEntity>> allProducts()
         {
             // Retrieve a reference to the table.
             CloudTable table = TableAzure();
@@ -21,7 +21,7 @@ namespace modelViewController{
 
             var token = new TableContinuationToken();
             var list = new List<ProductEntity>();
-            foreach(azureProduct entity in table.ExecuteQuerySegmentedAsync(query,token).Result){
+            foreach(azureProduct entity in await table.ExecuteQuerySegmentedAsync(query,token)){
                  list.Add(new ProductEntity(){
                     Code = entity.Code,
                     Category = entity.Category,
@@ -31,15 +31,13 @@ namespace modelViewController{
             return list;
         }
 
-        public Task<List<ProductEntity>> allProductsByCategory(string category)
+        public async Task<List<ProductEntity>> allProductsByCategory(string category)
         {
             return new List<ProductEntity>();
         }
 
-        public Task<bool> createProduct(ProductEntity newProduct)
+        public async Task<bool> createProduct(ProductEntity newProduct)
         {
-        
-
         // Retrieve a reference to the table.
         CloudTable table = TableAzure();
 
@@ -51,14 +49,12 @@ namespace modelViewController{
         azEnt.Price = newProduct.Price.ToString("C");
         azEnt.Description = newProduct.Description;
         azEnt.image = newProduct.image;
-
-
-        
-
         TableOperation insertOperation = TableOperation.Insert(azEnt);
 
         // Execute the insert operation.
-        var x = table.ExecuteAsync(insertOperation).Result;
+        var x = await table.ExecuteAsync(insertOperation);
+
+        return true;
         }
 
         public Task<bool>  eraseProductCode(string code)
@@ -76,11 +72,11 @@ namespace modelViewController{
             CloudTable table = tableClient.GetTableReference("catalogo");
             return table;
         }
-        public Task<ProductEntity> productDetails(string code)
+        public async Task<ProductEntity> productDetails(string code)
         {
             TableOperation retrieveOperation = TableOperation.Retrieve<azureProduct>("Smith","Ben");
 
-            TableResult retrievedResult = TableAzure().ExecuteAsync(retrieveOperation).Result;
+            TableResult retrievedResult = await TableAzure().ExecuteAsync(retrieveOperation);
 
             if(retrievedResult != null)
             {
@@ -97,9 +93,10 @@ namespace modelViewController{
             throw new NotImplementedException();
         }
 
-        public void updateImage(ProductEntity product, string image)
+        public async Task<bool> updateImage(ProductEntity product, string image)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            return true;
         }
     }
     public class azureProduct : TableEntity{

@@ -17,9 +17,9 @@ namespace modelViewController.Controllers
             products = new AzureProductsRepo();
         } 
         [HttpGet]
-        public IEnumerable<ProductModel> GetAll()
+        public async Task<IEnumerable<ProductModel>> GetAll()
         {
-            var model = products.allProducts()
+            var model = (await products.allProducts())
                         .Select( p => new ProductModel(){
                             Code = p.Code,
                             Category = p.Category,
@@ -31,16 +31,16 @@ namespace modelViewController.Controllers
         }
 
         [HttpGet("{id}", Name = "GetTodo")]
-        public IActionResult GetById(string id)
+        public async Task<IActionResult> GetById(string id)
         {
-            var model = products.productDetails(id);
+            var model = await products.productDetails(id);
             var detailed = new ProductModel(){
                 Code = model.Code,
                 Description = model.Description,
                 Category = model.Category,
                 Price = model.Price,
             };
-            return new ObjectResult(detailed);
+            return new ObjectResult(model);
         }
     }
 }
