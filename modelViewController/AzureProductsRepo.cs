@@ -25,7 +25,9 @@ namespace modelViewController{
                  list.Add(new ProductEntity(){
                     Code = entity.Code,
                     Category = entity.Category,
-                    Description = entity.Description
+                    Description = entity.Description,
+                    Price = decimal.Parse(entity.Price),
+                    image = entity.image
                  });
             }
             return list;
@@ -57,9 +59,22 @@ namespace modelViewController{
         return true;
         }
 
-        public Task<bool>  eraseProductCode(string code)
+        public async Task<bool>  eraseProductCode(string code)
         {
-            throw new NotImplementedException();
+            var table = TableAzure();
+            var retriveOp = TableOperation
+                                .Retrieve<azureProduct>(
+                                    code.Substring(0,3),
+                                    code);
+            var resultado = await table.ExecuteAsync(retriveOp);
+            if(resultado!=null){
+                var p = resultado.Result as azureProduct;
+                var delOp = TableOperation.Delete(p);
+                await table.ExecuteAsync(delOp);
+                return true;
+            }else{
+                return false;
+            }
         }
 
         private CloudTable TableAzure(){
@@ -74,7 +89,10 @@ namespace modelViewController{
         }
         public async Task<ProductEntity> productDetails(string code)
         {
-            TableOperation retrieveOperation = TableOperation.Retrieve<azureProduct>("Smith","Ben");
+            TableOperation retrieveOperation = TableOperation.Retrieve<azureProduct>(
+                                                                    code.Substring(0,3),
+                                                                    code);
+
 
             TableResult retrievedResult = await TableAzure().ExecuteAsync(retrieveOperation);
 
@@ -89,15 +107,28 @@ namespace modelViewController{
                     image = az.image
                 };
             }
-            else{
-                Console.WriteLine("Error");
-            }
             return null;
         }
 
-        public Task<bool>  updateData(ProductEntity toUpdate)
+        public async Task<bool>  updateData(ProductEntity toUpdate)
         {
-            throw new NotImplementedException();
+            var table = TableAzure();
+            var retrieveOp = TableOperation.Retrieve<azureProduct>(
+                                    toUpdate.Code.Substring(0,3),
+                                    toUpdate.Code);
+            var result  = await table.ExecuteAsync(retrieveOp);
+            if(result != null){
+                var p = result.Result as azureProduct;
+                p.Price = toUpdate.Price.ToString();
+                p.Description = toUpdate.Description;
+                p.Category = toUpdate.Category;
+
+                var upOp = TableOperation.Replace(p);
+                await table.ExecuteAsync(upOp);
+                return true;
+            }else{
+                return false;
+            }
         }
 
         public async Task<bool> updateImage(ProductEntity product, string image)
