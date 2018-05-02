@@ -49,7 +49,7 @@ namespace modelViewController.Controllers
         // POST: Catalogo/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(ProductCreateModel model)
+        public async Task<ActionResult> Create(ProductCreateModel model)
         {
             if(ModelState.IsValid){
 
@@ -57,7 +57,7 @@ namespace modelViewController.Controllers
             try
             {
                 // TODO: Add insert logic here
-                products.createProduct(new ProductEntity(){
+                await products.createProduct(new ProductEntity(){
                     Code = model.Code,
                     Description = model.Description,
                     Price = model.Price,
@@ -76,8 +76,9 @@ namespace modelViewController.Controllers
         // GET: Catalogo/Edit/5
         public async Task<ActionResult> Edit(string id)
         {
-            var product = (await products.productDetails(id));
+            var product = await products.productDetails(id);
             return View(new ProductEditModel(){
+                Code = product.Code,
                 Description = product.Description,
                 Price = product.Price,
                 Category = product.Category
@@ -87,7 +88,7 @@ namespace modelViewController.Controllers
         // POST: Catalogo/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(ProductEditModel model)
+        public async Task <ActionResult> Edit(ProductEditModel model)
         {
             if(ModelState.IsValid){
 
@@ -95,7 +96,8 @@ namespace modelViewController.Controllers
             try
             {
                 // TODO: Add update logic here
-                products.updateData(new ProductEntity(){
+                await products.updateData(new ProductEntity(){
+                    Code = model.Code,
                     Description = model.Description,
                     Price = model.Price,
                     Category = model.Category
@@ -124,12 +126,12 @@ namespace modelViewController.Controllers
         // POST: Catalogo/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(string id, IFormCollection collection)
+        public async Task<ActionResult> Delete(string id, IFormCollection collection)
         {
             try
             {
                 // TODO: Add delete logic here
-                products.eraseProductCode(id);
+                await products.eraseProductCode(id);
                 return RedirectToAction(nameof(Index));
             }
             catch

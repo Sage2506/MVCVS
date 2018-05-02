@@ -40,23 +40,23 @@ namespace modelViewController{
 
         public async Task<bool> createProduct(ProductEntity newProduct)
         {
-        // Retrieve a reference to the table.
-        CloudTable table = TableAzure();
+            // Retrieve a reference to the table.
+            CloudTable table = TableAzure();
 
-        // Create the table if it doesn't exist.
-        var creada = table.CreateIfNotExistsAsync().Result;
+            // Create the table if it doesn't exist.
+            var creada = table.CreateIfNotExistsAsync().Result;
 
-        var azEnt =  new azureProduct(newProduct.Code);
-        azEnt.Category = newProduct.Category;
-        azEnt.Price = newProduct.Price.ToString("C");
-        azEnt.Description = newProduct.Description;
-        azEnt.image = newProduct.image;
-        TableOperation insertOperation = TableOperation.Insert(azEnt);
+            var azEnt =  new azureProduct(newProduct.Code);
+            azEnt.Category = newProduct.Category;
+            azEnt.Price = newProduct.Price.ToString();
+            azEnt.Description = newProduct.Description;
+            azEnt.image = newProduct.image;
+            TableOperation insertOperation = TableOperation.Insert(azEnt);
 
-        // Execute the insert operation.
-        var x = await table.ExecuteAsync(insertOperation);
+            // Execute the insert operation.
+            var x = await table.ExecuteAsync(insertOperation);
 
-        return true;
+            return true;
         }
 
         public async Task<bool>  eraseProductCode(string code)
@@ -80,11 +80,12 @@ namespace modelViewController{
         private CloudTable TableAzure(){
             CloudStorageAccount storageAccount = CloudStorageAccount.Parse(azureConStr);
 
-        // Create the table client.
+            // Create the table client.
             CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
 
             // Retrieve a reference to the table.
             CloudTable table = tableClient.GetTableReference("catalogo");
+
             return table;
         }
         public async Task<ProductEntity> productDetails(string code)
